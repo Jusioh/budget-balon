@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 // Put your audio file in the /public folder and match the name here.
-const SONG = "/beneath-the-mask.mp3";
+const SONG = `${import.meta.env.BASE_URL}beneath-the-mask.mp3`;
 
 export default function MusicButton() {
   const audioRef = useRef(null);

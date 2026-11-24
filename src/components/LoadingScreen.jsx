@@ -7,7 +7,11 @@ export default function LoadingScreen({ leaving }) {
         leaving ? "opacity-0" : "opacity-100"
       }`}
     >
-      <img src="/loading.gif" alt="" className="max-h-full max-w-full object-contain" />
+     <img
+  src={`${import.meta.env.BASE_URL}loading.gif`}
+  alt=""
+  className="max-h-full max-w-full object-contain"
+/>
     </div>
   );
 }

@@ -77,7 +77,7 @@ export default function App() {
 
       {/* Character art: bottom-right, behind the content, large screens only */}
       <img
-        src="/web_art.png"
+        src={`${import.meta.env.BASE_URL}web_art.png`}
         alt=""
         aria-hidden="true"
         className="pointer-events-none fixed bottom-0 right-0 z-0 hidden h-[85vh] w-auto select-none xl:block"
