@@ -4,7 +4,7 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
   if (expenses.length === 0) {
     return (
       <p className="border-2 border-dashed border-white p-6 text-center text-white">
-        No expenses here yet. Add one using the form.
+        No matching expenses found.
       </p>
     );
   }

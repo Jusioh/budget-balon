@@ -4,6 +4,8 @@ import SummaryCards from "./components/SummaryCards";
 import ExpenseForm from "./components/ExpenseForm";
 import CategoryFilter from "./components/CategoryFilter";
 import ExpenseList from "./components/ExpenseList";
+import SearchModal from "./components/SearchModal";
+import EditModal from "./components/EditModal";
 import "./App.css";
 import LoadingScreen from "./components/LoadingScreen";
 
@@ -21,6 +23,7 @@ export default function App() {
   const [expenses, setExpenses] = useState(() => load("bb_expenses", []));
   const [budget, setBudget] = useState(() => load("bb_budget", 500));
   const [filter, setFilter] = useState("All");
+  const [searching, setSearching] = useState(false); // search modal open?
   const [editing, setEditing] = useState(null); // expense being edited, or null
   const [phase, setPhase] = useState("loading"); // loading → leaving → done
 
@@ -32,14 +35,6 @@ export default function App() {
       clearTimeout(done);
     };
   }, []);
-
-  // Close the edit modal with Escape
-  useEffect(() => {
-    if (!editing) return;
-    const onKey = (e) => e.key === "Escape" && setEditing(null);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [editing]);
 
   // Sync to localStorage whenever data changes
   useEffect(() => {
@@ -71,6 +66,12 @@ export default function App() {
     if (editing?.id === id) setEditing(null);
   };
 
+  // Edit from the search results: close search, open edit modal
+  const editFromSearch = (expense) => {
+    setSearching(false);
+    setEditing(expense);
+  };
+
   return (
     <div>
       {phase !== "done" && <LoadingScreen leaving={phase === "leaving"} />}
@@ -94,7 +95,11 @@ export default function App() {
             onCancel={() => setEditing(null)}
           />
           <section>
-            <CategoryFilter value={filter} onChange={setFilter} />
+            <CategoryFilter
+              value={filter}
+              onChange={setFilter}
+              onSearch={() => setSearching(true)}
+            />
             <ExpenseList
               expenses={visible}
               onEdit={setEditing}
@@ -104,26 +109,22 @@ export default function App() {
         </div>
       </main>
 
-      {/* Edit modal: blurs everything behind it, form sits in front */}
+      {/* Search modal: search box on top, results below */}
+      {searching && (
+        <SearchModal
+          expenses={expenses}
+          onClose={() => setSearching(false)}
+          onEdit={editFromSearch}
+        />
+      )}
+
+      {/* Edit modal: same Persona 5 transition as search */}
       {editing && (
-        <div
-          className="fixed inset-0 z-40 grid place-items-center overflow-y-auto bg-black/50 p-4 backdrop-blur-md"
-          onClick={() => setEditing(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Edit expense"
-        >
-          <div
-        className="w-full max-w-[560px] [&_form]:gap-5 [&_form]:p-6 [&_h2]:text-3xl [&_label]:text-lg [&_.field]:p-3 [&_.field]:text-lg [&_.btn]:px-6 [&_.btn]:py-2 [&_.btn]:text-lg"
-        onClick={(e) => e.stopPropagation()}
-        >
-            <ExpenseForm
-              editing={editing}
-              onSave={saveExpense}
-              onCancel={() => setEditing(null)}
-            />
-          </div>
-        </div>
+        <EditModal
+          editing={editing}
+          onSave={saveExpense}
+          onClose={() => setEditing(null)}
+        />
       )}
     </div>
   );
