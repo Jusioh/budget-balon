@@ -591,6 +591,7 @@
   position: fixed;
   inset: 0;
   z-index: 45;
+  overflow: hidden;
   pointer-events: none;
 }
 
@@ -598,8 +599,12 @@
 .p5-wipe::after {
   content: "";
   position: absolute;
-  inset: 0;
-  clip-path: polygon(0 0, 0 0, -30% 100%, -30% 100%);
+  top: -10%;
+  left: 0;
+  width: 220%;
+  height: 120%;
+  will-change: transform;
+  transform: translate3d(-100%, 0, 0) skewX(-20deg);
 }
 
 /* Black trails behind the red */
@@ -615,19 +620,19 @@
 
 @keyframes p5-slash {
   0% {
-    clip-path: polygon(0 0, 0 0, -30% 100%, -30% 100%);
+    transform: translate3d(-100%, 0, 0) skewX(-20deg);
   }
   45% {
-    clip-path: polygon(0 0, 130% 0, 100% 100%, -30% 100%);
+    transform: translate3d(-25%, 0, 0) skewX(-20deg);
   }
   100% {
-    clip-path: polygon(130% 0, 130% 0, 100% 100%, 100% 100%);
+    transform: translate3d(100%, 0, 0) skewX(-20deg);
   }
 }
 
-/* Backdrop fades in under the slash */
+/* Backdrop fades in once the slash covers the screen */
 .p5-overlay {
-  animation: p5-fade-in 0.2s ease-out 0.15s both;
+  animation: p5-fade-in 0.2s ease-out 0.22s both;
 }
 
 /* Card snaps in right when the screen is fully covered */
@@ -699,11 +704,5 @@
   to {
     opacity: 0;
     transform: translateX(-80%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .p5-wipe {
-    display: none;
   }
 }
