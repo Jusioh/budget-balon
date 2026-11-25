@@ -41,7 +41,7 @@ export default function SummaryCards({
 
       <div className={`card ${over ? "over" : ""}`}>
         <h3 className={`mb-2 text-xl ${over ? "" : "text-brand"}`}>
-          {over ? "Over budget!" : "Remaining"}
+          {over ? "Over budget!" : "Remaining budget"}
         </h3>
 
         <p className="text-4xl font-bold">
