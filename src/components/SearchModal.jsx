@@ -1,9 +1,50 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-export default function SearchModal({ expenses, onClose, onEdit }) {
+const iconProps = {
+  viewBox: "0 0 24 24",
+  width: "20",
+  height: "20",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2.5",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  "aria-hidden": "true"
+};
+
+const EditIcon = () => (
+  <svg {...iconProps}>
+    <path d="M12 20h9" />
+    <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
+  </svg>
+);
+
+const TrashIcon = () => (
+  <svg {...iconProps}>
+    <path d="M3 6h18" />
+    <path d="M8 6V4h8v2" />
+    <path d="M19 6l-1 14H6L5 6" />
+    <path d="M10 11v6M14 11v6" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg {...iconProps}>
+    <path d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg {...iconProps}>
+    <path d="M6 6l12 12M18 6L6 18" />
+  </svg>
+);
+
+export default function SearchModal({ expenses, onClose, onEdit, onDelete }) {
   const [query, setQuery] = useState("");
   const [closing, setClosing] = useState(false);
   const [settled, setSettled] = useState(false); // true once the open animation is done
+  const [askingId, setAskingId] = useState(null); // result waiting for delete confirmation
   const inputRef = useRef(null);
 
   // Play the exit animation, then actually unmount
@@ -90,7 +131,10 @@ export default function SearchModal({ expenses, onClose, onEdit }) {
               placeholder="Search description, category, date, amount..."
               aria-label="Search expenses"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setAskingId(null);
+              }}
             />
 
             {query && (
@@ -99,6 +143,7 @@ export default function SearchModal({ expenses, onClose, onEdit }) {
                 className="absolute right-2 top-1/2 -translate-y-1/2 px-2 font-bold text-ink"
                 onClick={() => {
                   setQuery("");
+                  setAskingId(null);
                   inputRef.current?.focus();
                 }}
                 aria-label="Clear search"
@@ -128,9 +173,9 @@ export default function SearchModal({ expenses, onClose, onEdit }) {
                   {results.map((e) => (
                     <li
                       key={e.id}
-                      className="flex items-center justify-between gap-3 border-2 border-line bg-white p-3"
+                      className="flex flex-wrap items-center justify-between gap-3 border-2 border-line bg-white p-3"
                     >
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <strong className="block truncate">
                           {e.description}
                         </strong>
@@ -143,13 +188,53 @@ export default function SearchModal({ expenses, onClose, onEdit }) {
                         <span className="font-bold">
                           ₱{e.amount.toFixed(2)}
                         </span>
-                        <button
-                          type="button"
-                          className="btn"
-                          onClick={() => onEdit(e)}
-                        >
-                          Edit
-                        </button>
+
+                        {askingId === e.id ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn text-danger flex items-center justify-center"
+                              onClick={() => {
+                                onDelete(e.id);
+                                setAskingId(null);
+                              }}
+                              aria-label="Confirm delete"
+                              title="Confirm delete"
+                            >
+                              <CheckIcon />
+                            </button>
+                            <button
+                              type="button"
+                              className="btn flex items-center justify-center"
+                              onClick={() => setAskingId(null)}
+                              aria-label="Keep expense"
+                              title="Keep"
+                            >
+                              <CloseIcon />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              className="btn flex items-center justify-center"
+                              onClick={() => onEdit(e)}
+                              aria-label="Edit expense"
+                              title="Edit"
+                            >
+                              <EditIcon />
+                            </button>
+                            <button
+                              type="button"
+                              className="btn text-danger flex items-center justify-center"
+                              onClick={() => setAskingId(e.id)}
+                              aria-label="Delete expense"
+                              title="Delete"
+                            >
+                              <TrashIcon />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </li>
                   ))}

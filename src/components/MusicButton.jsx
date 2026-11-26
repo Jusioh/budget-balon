@@ -7,34 +7,14 @@ export default function MusicButton() {
   const audioRef = useRef(null);
   const [playing, setPlaying] = useState(false);
 
+  // Set the volume only. No autoplay: music starts when the button is pressed.
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.volume = 0.4;
-
-    const events = ["click", "keydown", "touchend"];
-    const cleanup = () =>
-      events.forEach((ev) => window.removeEventListener(ev, onInteract));
-
-    const tryPlay = () =>
-      audio
-        .play()
-        .then(cleanup) // started: stop listening
-        .catch(() => {}); // blocked: wait for the next interaction
-
-    function onInteract(e) {
-      // Clicks on the music button are handled by the button itself
-      if (e.target.closest?.("[data-music]")) return;
-      tryPlay();
-    }
-
-    tryPlay(); // works if the browser allows autoplay
-    events.forEach((ev) => window.addEventListener(ev, onInteract));
-    return cleanup;
+    if (audioRef.current) audioRef.current.volume = 0.4;
   }, []);
 
   const toggle = () => {
     const audio = audioRef.current;
+    if (!audio) return;
     if (audio.paused) audio.play().catch(() => {});
     else audio.pause();
   };
@@ -72,7 +52,7 @@ export default function MusicButton() {
         ref={audioRef}
         src={SONG}
         loop
-        preload="auto"
+        preload="none"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
       />
