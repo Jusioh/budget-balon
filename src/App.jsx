@@ -59,9 +59,8 @@ export default function App() {
     setEditing(null);
   };
 
-  // DELETE with confirmation
+  // DELETE (confirmation is handled inline in ExpenseItem and SearchModal)
   const deleteExpense = (id) => {
-    if (!window.confirm("Delete this expense?")) return;
     setExpenses((prev) => prev.filter((e) => e.id !== id));
     if (editing?.id === id) setEditing(null);
   };
