@@ -9,7 +9,7 @@ const iconProps = {
   strokeWidth: "2.5",
   strokeLinecap: "round",
   strokeLinejoin: "round",
-  "aria-hidden": "true",
+  "aria-hidden": "true"
 };
 
 const EditIcon = () => (
@@ -45,18 +45,26 @@ export default function ExpenseItem({ expense, onEdit, onDelete }) {
 
   return (
     <li className="expense-item card">
+
+      {/* Description and category */}
       <div className="expense-details">
-        <strong className="expense-description">{expense.description}</strong>
+        <strong title={expense.description}>
+          {expense.description}
+        </strong>
+
         <small className="block text-muted">
           {expense.category}, {expense.date}
         </small>
       </div>
 
-      <span className="expense-amount font-bold">
+      {/* Amount */}
+      <span className="expense-amount">
         ₱{expense.amount.toFixed(2)}
       </span>
 
+      {/* Action buttons */}
       <div className="expense-actions">
+
         {asking ? (
           <>
             <button
@@ -102,6 +110,7 @@ export default function ExpenseItem({ expense, onEdit, onDelete }) {
             </button>
           </>
         )}
+
       </div>
     </li>
   );
