@@ -1,6 +1,5 @@
 import ExpenseItem from "./ExpenseItem";
 
-// Show a message when there are no expenses to display.
 export default function ExpenseList({ expenses, onEdit, onDelete }) {
   if (expenses.length === 0) {
     return (
@@ -11,15 +10,17 @@ export default function ExpenseList({ expenses, onEdit, onDelete }) {
   }
 
   return (
-    <ul className="expense-list" aria-label="Expenses">
-      {expenses.map((expense) => (
-        <ExpenseItem
-          key={expense.id}
-          expense={expense}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      ))}
-    </ul>
+    <div className="expense-list-scroll">
+      <ul className="expense-list">
+        {expenses.map((e) => (
+          <ExpenseItem
+            key={e.id}
+            expense={e}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        ))}
+      </ul>
+    </div>
   );
 }
