@@ -9,7 +9,7 @@ const iconProps = {
   strokeWidth: "2.5",
   strokeLinecap: "round",
   strokeLinejoin: "round",
-  "aria-hidden": "true"
+  "aria-hidden": "true",
 };
 
 const EditIcon = () => (
@@ -40,33 +40,27 @@ const CloseIcon = () => (
   </svg>
 );
 
-export default function ExpenseItem({
-  expense,
-  onEdit,
-  onDelete
-}) {
+export default function ExpenseItem({ expense, onEdit, onDelete }) {
   const [asking, setAsking] = useState(false);
 
   return (
-    <li className="expense-item card grid grid-cols-[1fr_auto] items-center gap-3 sm:grid-cols-[1fr_auto_auto]">
-
-      <div>
-        <strong>{expense.description}</strong>
-
+    <li className="expense-item card">
+      <div className="expense-details">
+        <strong className="expense-description">{expense.description}</strong>
         <small className="block text-muted">
           {expense.category}, {expense.date}
         </small>
       </div>
 
-      <span className="font-bold">
+      <span className="expense-amount font-bold">
         ₱{expense.amount.toFixed(2)}
       </span>
 
-      <div className="expense-actions col-span-full flex flex-wrap gap-2 sm:col-auto">
-
+      <div className="expense-actions">
         {asking ? (
           <>
             <button
+              type="button"
               className="btn text-danger flex items-center justify-center"
               onClick={() => onDelete(expense.id)}
               aria-label="Confirm delete"
@@ -76,6 +70,7 @@ export default function ExpenseItem({
             </button>
 
             <button
+              type="button"
               className="btn flex items-center justify-center"
               onClick={() => setAsking(false)}
               aria-label="Keep expense"
@@ -87,6 +82,7 @@ export default function ExpenseItem({
         ) : (
           <>
             <button
+              type="button"
               className="btn flex items-center justify-center"
               onClick={() => onEdit(expense)}
               aria-label="Edit expense"
@@ -96,6 +92,7 @@ export default function ExpenseItem({
             </button>
 
             <button
+              type="button"
               className="btn text-danger flex items-center justify-center"
               onClick={() => setAsking(true)}
               aria-label="Delete expense"
@@ -105,7 +102,6 @@ export default function ExpenseItem({
             </button>
           </>
         )}
-
       </div>
     </li>
   );
